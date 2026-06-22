@@ -19,7 +19,3 @@ package = false
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
-
-[tool.uv.sources]
-rai_core = { path = "/home/jazzy/rai/src/rai_core", editable = true }
-rai_whoami = { path = "/home/jazzy/rai/src/rai_whoami", editable = true }
