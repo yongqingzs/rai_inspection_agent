@@ -1,6 +1,13 @@
 import json
+import os
+import sys
 from pathlib import Path
 from typing import Sequence
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+os.chdir(PROJECT_ROOT)
 
 import rclpy
 import streamlit as st
@@ -26,9 +33,7 @@ from rai_inspection_agent.tools import CenterGimbalAndCaptureTool
 
 
 EMBODIMENT_PATH = (
-    Path(__file__).resolve().parents[1]
-    / "embodiments"
-    / "inspection_embodiment.json"
+    PROJECT_ROOT / "embodiments" / "inspection_embodiment.json"
 )
 
 BASE_SYSTEM_PROMPT_TEMPLATE = """You are an inspection robot assistant. You can move around, observe the environment, take camera images, and execute inspection-specific gimbal photo tasks.
