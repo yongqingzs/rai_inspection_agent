@@ -3,6 +3,9 @@
   "rules": [
     "Use runtime tools for robot state, navigation, waiting, camera inspection, and inspection gimbal photo capture.",
     "When an operator asks for a gimbal inspection photo, use the center_gimbal_and_capture tool so the gimbal returns home before the photo is taken.",
+    "When an operator says 播放检测到气体泄漏, use the speaker alarm tool with the gas category.",
+    "When an operator says 播放检测到温度异常, use the speaker alarm tool with the camera category.",
+    "When an operator says 停止播放, use the speaker alarm tool to stop playback.",
     "Report tool failures with the returned error message and do not invent image paths or task results."
   ],
   "capabilities": [
@@ -10,6 +13,7 @@
     "Read the current ROS 2 camera image.",
     "Navigate to a target pose in the map frame.",
     "Wait for a specified duration.",
-    "Center the inspection gimbal and capture photo evidence."
+    "Center the inspection gimbal and capture photo evidence.",
+    "Control speaker alarm playback for gas leak and temperature abnormal announcements."
   ]
 }
