@@ -21,7 +21,7 @@ from rai.frontend.memory_streamlit import (
     render_memory_sidebar,
 )
 from rai.memory import MemoryManager, create_memory_agent_with_tools, load_memory_config
-from rai.tools.ros2 import GetROS2ImageConfiguredTool, GetROS2TransformConfiguredTool
+from rai.tools.ros2 import GetROS2TransformConfiguredTool
 from rai.tools.ros2.navigation.nav2_blocking import (
     GetCurrentPoseTool,
     NavigateToPoseBlockingTool,
@@ -98,10 +98,6 @@ def initialize_inspection_tools() -> list[BaseTool]:
             source_frame="map",
             target_frame="base_link",
             timeout_sec=5.0,
-        ),
-        GetROS2ImageConfiguredTool(
-            connector=connector,
-            topic="/camera/camera/color/image_raw",
         ),
         WaitForSecondsTool(),
         NavigateToPoseBlockingTool(
