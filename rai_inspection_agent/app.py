@@ -29,7 +29,7 @@ from rai.tools.ros2.navigation.nav2_blocking import (
 from rai.tools.time import WaitForSecondsTool
 from rai_whoami import WhoamiConfig, create_robot_docs_tool, load_whoami_config
 
-from rai_inspection_agent.tools import CenterGimbalAndCaptureTool, ControlSpeakerAlarmTool
+from rai_inspection_agent.tools import AnalyzeArtifactImageTool, CenterGimbalAndCaptureTool, ControlSpeakerAlarmTool
 from rai_inspection_agent.tools import ReadGasStatusTool, StartGasMonitoringTool, StopGasMonitoringTool
 
 
@@ -52,6 +52,7 @@ This app does not include rai_perception object-position tools. If a task requir
 
 INSPECTION_TOOLS_PROMPT_SECTION = """## Inspection Runtime Tools
 When the user asks to take an inspection photo with the gimbal, use center_gimbal_and_capture. This tool centers the gimbal first, waits for settling, captures the requested photo(s), and returns the saved image path and execution status.
+When the user asks to analyze, inspect, describe, or judge a previously captured inspection photo, use analyze_artifact_image. Use tool_call_id "latest" unless the user gives a specific tool call id.
 When the user says "播放检测到气体泄漏", use control_speaker_alarm with command "gas_leak".
 When the user says "播放检测到温度异常", use control_speaker_alarm with command "temperature_abnormal".
 When the user says "停止播放", use control_speaker_alarm with command "stop".
@@ -115,6 +116,7 @@ def initialize_inspection_tools() -> list[BaseTool]:
             action_name="/center_gimbal_and_capture",
             result_timeout_sec=60.0,
         ),
+        AnalyzeArtifactImageTool(),
         ControlSpeakerAlarmTool(
             connector=connector,
             service_name="/alarm_aggregator_node/set_parameters",

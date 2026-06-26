@@ -89,4 +89,5 @@ def test_center_gimbal_and_capture_tool_sends_expected_goal(tmp_path: Path):
     assert "status=succeeded" in content
     assert f"image_uri={primary_image}" in content
     assert "captured_count=1" in content
-    assert len(artifact["images"]) == 2
+    assert artifact["images"] == []
+    assert len(artifact["raw_images"]) == 2

@@ -102,8 +102,11 @@ class CenterGimbalAndCaptureTool(BaseROS2Tool):
         result = getattr(action_result, "result", action_result)
         image_uri = getattr(result, "image_uri", "")
         image_paths = self._collect_image_paths(image_uri)
+        raw_images = [preprocess_image(str(path)) for path in image_paths]
         artifact: MultimodalArtifact = {
-            "images": [preprocess_image(str(path)) for path in image_paths],
+            "images": [],
+            "raw_images": raw_images,
+            "summary": f"Captured {len(raw_images)} image(s) for action_id={handle}",
             "audios": [],
         }
         content = (
