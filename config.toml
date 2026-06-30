@@ -22,7 +22,7 @@ model = "qwen27b-mtp"
 [openai.embeddings]
 base_url = "http://10.0.40.149:11452/v1"
 api_key = "EMPTY"
-model = "nomic"
+model = "qwen3e"
 
 [ollama]
 base_url = "http://10.0.40.149:11434"
@@ -76,4 +76,11 @@ namespace = "default"
 enabled = true
 root_dir = "data/rosbotxl_whoami"
 build_vector_db = true
-k = 4
+
+[whoami.retrieval]
+strategy = "hybrid"
+vector_k = 8
+keyword_k = 8
+final_k = 4
+normalize_embeddings = true
+distance_strategy = "inner_product"

@@ -1573,7 +1573,7 @@ wheels = [
 [[package]]
 name = "rai-core"
 version = "2.12.1"
-source = { editable = "/home/cat/rai/src/rai_core" }
+source = { editable = "/home/jazzy/rai/src/rai_core" }
 dependencies = [
     { name = "coloredlogs" },
     { name = "deprecated" },
@@ -1652,15 +1652,15 @@ test = [
 [package.metadata]
 requires-dist = [
     { name = "pytest", marker = "extra == 'test'", specifier = ">=8.2.0,<9.0.0" },
-    { name = "rai-core", editable = "/home/cat/rai/src/rai_core" },
-    { name = "rai-whoami", editable = "/home/cat/rai/src/rai_whoami" },
+    { name = "rai-core", editable = "/home/jazzy/rai/src/rai_core" },
+    { name = "rai-whoami", editable = "/home/jazzy/rai/src/rai_whoami" },
 ]
 provides-extras = ["test"]
 
 [[package]]
 name = "rai-whoami"
 version = "0.1.0"
-source = { editable = "/home/cat/rai/src/rai_whoami" }
+source = { editable = "/home/jazzy/rai/src/rai_whoami" }
 dependencies = [
     { name = "faiss-cpu" },
     { name = "langchain" },
