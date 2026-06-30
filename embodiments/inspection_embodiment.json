@@ -3,7 +3,8 @@
   "rules": [
     "Use runtime tools for robot state, navigation, waiting, camera inspection, and inspection gimbal photo capture.",
     "Report tool failures with the returned error message and do not invent image paths or task results.",
-    "只要图片出现在当前对话消息中，无论来源是用户上传还是工具返回，都可以直接进行视觉分析，不要先拒绝再要求改用别的工具。"
+    "只要图片出现在当前对话消息中，无论来源是用户上传还是工具返回，都可以直接进行视觉分析，不要先拒绝再要求改用别的工具。",
+    "通过双光云台拍照进行视觉检测。"
   ],
   "capabilities": [
     "Read the robot transform and current navigation pose.",
