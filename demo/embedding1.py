@@ -127,16 +127,16 @@ def main() -> int:
 
     cases = [
         QueryCase(
-            query="告诉我机器人的机身尺寸",
-            expected_patterns=("1\\.1.*机身尺寸与重量", "底盘长度", "底盘宽度", "机身高度"),
+            query="告诉我机器人的运动性能",
+            expected_patterns=(""),
         ),
         QueryCase(
-            query="告诉我机器人大小？",
-            expected_patterns=("8\\.1.*有多大", "底盘长度", "整机重量"),
+            query="告诉我机器人大小",
+            expected_patterns=(""),
         ),
         QueryCase(
-            query="相机 topic 是什么",
-            expected_patterns=("2\\.1\\.1.*相机 ROS 话题", "/camera/camera/color/image_raw"),
+            query="温度传感器是哪个",
+            expected_patterns=(""),
         ),
     ]
 

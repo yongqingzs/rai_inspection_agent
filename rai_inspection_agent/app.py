@@ -152,6 +152,8 @@ def build_memory_agent(
     llm = get_llm_model("complex_model", streaming=True)
     embodiment_text = _load_embodiment(embodiment_path)
     robot_docs_config = robot_docs_config or load_whoami_config()
+    if robot_docs_config.enabled and embeddings_model is None:
+        embeddings_model = get_embeddings_model()
     robot_docs_tool = create_robot_docs_tool(robot_docs_config, embeddings_model)
     runtime_tools = (
         list(robot_tools) if robot_tools is not None else initialize_inspection_tools()

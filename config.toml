@@ -78,7 +78,7 @@ root_dir = "data/rosbotxl_whoami"
 build_vector_db = true
 
 [whoami.retrieval]
-strategy = "hybrid"
+strategy = "vector"
 vector_k = 8
 keyword_k = 8
 final_k = 4
