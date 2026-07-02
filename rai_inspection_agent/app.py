@@ -14,6 +14,7 @@ import streamlit as st
 from langchain_core.messages import AIMessage, ToolMessage
 from langchain_core.tools import BaseTool
 from rai import get_embeddings_model, get_llm_model
+from rai.agents.langchain.core import ToolCallGuard, ToolPolicy
 from rai.communication.ros2 import ROS2Connector
 from rai.frontend.memory_streamlit import (
     render_chat_messages_with_tools,
@@ -62,6 +63,26 @@ When the user asks to stop gas monitoring, use stop_gas_monitoring.
 Do not remap these alarm meanings to other categories."""
 
 
+def _install_inspection_tool_policy_override() -> None:
+    original = ToolCallGuard.with_default_policies
+
+    if getattr(ToolCallGuard, "_rai_inspection_policy_override", False):
+        return
+
+    @classmethod
+    def with_inspection_policies(cls) -> ToolCallGuard:
+        guard = original()
+        guard.max_total_calls_per_turn = 20
+        guard.policies["navigate_to_pose_blocking"] = ToolPolicy(
+            max_calls_per_turn=12,
+            max_consecutive_calls=12,
+        )
+        return guard
+
+    ToolCallGuard.with_default_policies = with_inspection_policies
+    ToolCallGuard._rai_inspection_policy_override = True
+
+
 def _load_embodiment(path: Path) -> str:
     if not path.exists():
         return f"(Embodiment file not found at {path})"
@@ -81,6 +102,15 @@ def _load_embodiment(path: Path) -> str:
         return "\n\n".join(parts)
     except Exception as e:
         return f"(Error loading embodiment: {e})"
+
+
+def _attach_robot_docs_to_artifact_analysis(
+    tools: list[BaseTool],
+    robot_docs_tool: BaseTool | None,
+) -> None:
+    for tool in tools:
+        if isinstance(tool, AnalyzeArtifactImageTool):
+            tool.robot_docs_tool = robot_docs_tool
 
 
 @st.cache_resource
@@ -149,6 +179,7 @@ def build_memory_agent(
     embeddings_model=None,
     robot_tools: Sequence[BaseTool] | None = None,
 ) -> object:
+    _install_inspection_tool_policy_override()
     llm = get_llm_model("complex_model", streaming=True)
     embodiment_text = _load_embodiment(embodiment_path)
     robot_docs_config = robot_docs_config or load_whoami_config()
@@ -158,6 +189,7 @@ def build_memory_agent(
     runtime_tools = (
         list(robot_tools) if robot_tools is not None else initialize_inspection_tools()
     )
+    _attach_robot_docs_to_artifact_analysis(runtime_tools, robot_docs_tool)
 
     def build_base_system_prompt(_context) -> str:
         return BASE_SYSTEM_PROMPT_TEMPLATE.format(embodiment=embodiment_text)

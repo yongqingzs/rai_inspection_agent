@@ -39,6 +39,8 @@ class AnalyzeArtifactImageTool(BaseTool):
     args_schema: Type[AnalyzeArtifactImageInput] = AnalyzeArtifactImageInput
     artifact_root: str = Field(default="data/artifacts")
     llm: Any | None = Field(default=None, exclude=True)
+    robot_docs_tool: Any | None = Field(default=None, exclude=True)
+    inspection_requirements_query: str = Field(default="视觉检测要求")
 
     def _run(
         self,
@@ -56,11 +58,13 @@ class AnalyzeArtifactImageTool(BaseTool):
         if not images:
             return f"No artifact images found for tool_call_id={selected_tool_call_id}."
 
+        requirements = self._load_inspection_requirements()
+        prompt = self._build_prompt(question, requirements)
         llm = self.llm or get_llm_model("complex_model", streaming=False)
         response = llm.invoke(
             [
                 HumanMultimodalMessage(
-                    content=question,
+                    content=prompt,
                     images=images[:max_images],
                 )
             ]
@@ -70,6 +74,28 @@ class AnalyzeArtifactImageTool(BaseTool):
             f"tool_call_id={selected_tool_call_id}\n"
             f"analyzed_images={min(len(images), max_images)}\n"
             f"analysis={response_content}"
+        )
+
+    def _load_inspection_requirements(self) -> str:
+        if self.robot_docs_tool is None:
+            return ""
+        try:
+            result = self.robot_docs_tool.invoke(
+                {"query": self.inspection_requirements_query}
+            )
+        except Exception as e:
+            return f"(Could not retrieve visual inspection requirements: {type(e).__name__}: {e})"
+        content = getattr(result, "content", result)
+        return str(content).strip()
+
+    def _build_prompt(self, question: str, requirements: str) -> str:
+        if not requirements:
+            return question
+        return (
+            "Use the following robot documentation requirements as the inspection "
+            "criteria for this image analysis.\n\n"
+            f"## Visual Inspection Requirements\n{requirements}\n\n"
+            f"## User Question\n{question}"
         )
 
     def _latest_tool_call_id(self) -> str | None:
